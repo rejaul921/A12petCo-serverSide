@@ -16,6 +16,20 @@ app.use(cors());
 app.use(express.json());
 
 
+
+// for category browsing by
+
+const categories=[
+    {id:1, name:"Dog", img:"https://i.ibb.co/hKRLtx1/category-dog.jpg"},
+    {id:2, name:"Cat", img:"https://i.ibb.co/Js9nNX0/category-cat.jpg"},
+    {id:3, name:"Rabbit", img:"https://i.ibb.co/pWQzkW8/category-rabbit.jpg"},
+    {id:4,  name:"Bird", img:"https://i.ibb.co/7JmJdXZ/category-bird.jpg"},
+  ]
+  
+  app.get('/categories',(req,res)=>{
+    res.send(categories)
+   })
+
 // mongodb server
 const uri = `mongodb+srv://${process.env.MGDB_USER}:${process.env.MGDB_PASS}@cluster0.skku3ga.mongodb.net/?retryWrites=true&w=majority`;
 
