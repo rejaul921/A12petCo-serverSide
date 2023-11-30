@@ -48,6 +48,27 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // creating Database for PetCo project
+    const database = client.db("petCoDB");
+    // collections
+    const allPets = database.collection("allPets");
+
+    // post method to add pet in database
+    app.post('/addPet', async(req,res)=>{
+      const pet=req.body;
+      console.log(pet)
+      const result = await allPets.insertOne(pet);
+      res.send(result);
+    });
+
+    // using get method to loading allPets from Database send to clientside
+    app.get('/allPets', async(req,res)=>{
+      const cursor=allPets.find()
+      const allpets= await cursor.toArray();
+      res.send(allpets);
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
