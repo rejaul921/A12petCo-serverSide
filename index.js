@@ -57,7 +57,7 @@ async function run() {
     // post method to add pet in database
     app.post('/addPet', async(req,res)=>{
       const pet=req.body;
-      console.log(pet)
+      // console.log(pet)
       const result = await allPets.insertOne(pet);
       res.send(result);
     });
@@ -82,10 +82,17 @@ async function run() {
     const Adopters = database.collection("Adopters");
     app.post('/addAdoptionRequest', async(req,res)=>{
       const AdopterRequest=req.body;
-      console.log(AdopterRequest)
+      // console.log(AdopterRequest)
       const result = await Adopters.insertOne(AdopterRequest);
       res.send(result);
     });
+    // category wise pets loading
+    app.get('/categories/:name', async(req,res)=>{
+      const categoryName=req.params.name
+      const query={petCategory:categoryName}
+      const petsInCategory=await allPets.find(query).toArray()
+      res.send(petsInCategory);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
