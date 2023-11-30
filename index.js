@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port=process.env.PORT||5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 // requiring env
 require('dotenv').config();
@@ -68,6 +68,24 @@ async function run() {
       const allpets= await cursor.toArray();
       res.send(allpets);
     })
+
+    // for PetDetails loading single Pet data from database
+    app.get('/petDetails/:_id', async(req, res)=>{
+      const id=req.params._id
+      const query = { _id: new ObjectId(id) };
+      const pet= await allPets.findOne(query)
+      res.send(pet);
+    })
+
+    // receiving adoption request
+    // collections
+    const Adopters = database.collection("Adopters");
+    app.post('/addAdoptionRequest', async(req,res)=>{
+      const AdopterRequest=req.body;
+      console.log(AdopterRequest)
+      const result = await Adopters.insertOne(AdopterRequest);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
