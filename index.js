@@ -94,6 +94,24 @@ async function run() {
       res.send(petsInCategory);
     })
 
+     // collections
+     const allDonations = database.collection("allDonations");
+
+     // post method to add Campaign in database
+     app.post('/addCampaign', async(req,res)=>{
+       const campaign=req.body;
+       // console.log(campaign)
+       const result = await allDonations.insertOne(campaign);
+       res.send(result);
+     });
+
+     // using get method to loading allDonationCampaign from Database send to clientside
+    app.get('/allCampaign', async(req,res)=>{
+      const cursor=allDonations.find()
+      const donations= await cursor.toArray();
+      res.send(donations);
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
