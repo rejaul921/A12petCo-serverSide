@@ -69,6 +69,13 @@ async function run() {
       res.send(allpets);
     })
 
+    // all users reading
+    app.get('/allUsers', async(req,res)=>{
+      const cursor=usersCollection.find()
+      const allUsers= await cursor.toArray();
+      res.send(allUsers);
+    })
+
     // for PetDetails loading single Pet data from database
     app.get('/petDetails/:_id', async(req, res)=>{
       const id=req.params._id
@@ -86,6 +93,13 @@ async function run() {
       const result = await Adopters.insertOne(AdopterRequest);
       res.send(result);
     });
+    // reading adopters request for dashboard
+    app.get('/adopttionRequest', async(req,res)=>{
+      const cursor=Adopters.find()
+      const allRequest= await cursor.toArray();
+      res.send(allRequest);
+    })
+
     // category wise pets loading
     app.get('/categories/:name', async(req,res)=>{
       const categoryName=req.params.name
@@ -111,10 +125,33 @@ async function run() {
       const donations= await cursor.toArray();
       res.send(donations);
     })
+    // for Donation Campaign Details loading single campaign data from database
+    app.get('/donationDetails/:_id', async(req, res)=>{
+      const id=req.params._id
+      const query = { _id: new ObjectId(id) };
+      const donateCampaign= await allDonations.findOne(query)
+      res.send(donateCampaign);
+    })
+    // post method to add user in database
+    // collections name
+    const usersCollection = database.collection("usersCollection");
+     app.post('/users', async(req,res)=>{
+       const user=req.body;
+       // console.log(user)
+      //  query and if find user return him
+       const query={email: user.email}
+       const userInDatabase=await usersCollection.findOne(query)
+       if(userInDatabase){
+        return res.send({message:"user already in database"})
+       }
+      //  else store in data
+       const result = await usersCollection.insertOne(user);
+       res.send(result);
+     });
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
